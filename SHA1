@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# 
+# This script takes list of file paths selected in Nautilus and calculates SHA-1 hashes for them.
+# The result is presented by Zenity's information dialog.
+#
+
+IFS_BAK=$IFS
+IFS="
+"
+REPORT=""
+
+for line in $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS; do
+    SHASUM=`sha1sum $line`
+    FILE_NAME=`echo $SHASUM | awk '{$1=""; print $0}'`
+    HASH=`echo $SHASUM | awk '{print $1}'`
+    REPORT="$REPORT $FILE_NAME\n<b>$HASH</b>\n"
+done
+
+IFS=$IFS_BAK
+
+zenity --info --no-wrap --text="$REPORT"
